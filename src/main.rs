@@ -1,39 +1,32 @@
+mod theme;
+
 use std::error::Error;
 
-use serde::{Deserialize};
-//use std::collections::HashMap;
+use dotenv::dotenv;
 
-#[derive(Debug, Deserialize)]
-pub struct Weather {
-    location: Location,
+use newsapi::{get_weather, Weather};
+
+fn render_weather(weather: &Weather) {
+    let theme = theme::default();
+    theme.print_text("# Top en-têtes\n\n");
+    theme.print_text(&format!("`{}`", weather.location.name));
+    theme.print_text(&format!(">*{}*", weather.location.country));
+    theme.print_text("---");
 }
 
-#[derive(Debug, Deserialize)]
-struct Location {
-    name: String,
-    country: String,
-    //lat: f32,
-    //lon: f32,
-    //tz_id: String,
-    //localtime_epoch: i64,
-    localtime: String
-}
+fn main() -> Result<(), Box<dyn Error>> {
+    dotenv()?;
 
-#[derive(Deserialize, Debug)]
-struct Weathers {
-    weathers: Vec<Weather>
-}
+    let api_key = std::env::var("API_KEY")?;
 
-fn get_weather(url: &str) -> Result<Weather, Box<dyn Error>> {
-    let response = ureq::get(url).call()?.into_string()?;
+    let url: &str = 
+        "http://api.weatherapi.com/v1/forecast.json?q=Braine-Alleud&lang=fr&days=1&key=";
+;
+    let url = format!("{}{}", url, api_key);
 
-    let weather: Weather = serde_json::from_str(&response)?;
+    let weather = get_weather(&url)?;
 
-    Ok(weather)
-}
-fn main() {
-    let url: &str = "http://api.weatherapi.com/v1/forecast.json?key=bd238e9b8e7944358d6190707231201&q=Braine-Alleud&lang=fr&days=1";
-    let weather = get_weather(url);
+    render_weather(&weather);
 
-    dbg!(weather);
+    Ok(())
 }
