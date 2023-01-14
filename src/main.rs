@@ -2,15 +2,17 @@ mod theme;
 
 use std::error::Error;
 
+use chrono::{offset::TimeZone, DateTime, Datelike, Local, NaiveDateTime};
+
 use dotenv::dotenv;
 
 use newsapi::{get_weather, Weather};
 
 fn render_weather(weather: &Weather) {
     let theme = theme::default();
-    theme.print_text("# Top en-têtes\n\n");
-    theme.print_text(&format!("`{}`", weather.location.name));
-    theme.print_text(&format!(">*{}*", weather.location.country));
+    theme.print_text("# Prévisions métérologiques\n\n");
+    theme.print_text(&format!("`{}` (`{}`, `{}`)", weather.location.name, weather.location.lat, weather.location.lon));
+    theme.print_text(&format!("*{} {}*", weather.location.country, weather.location.localtime));
     theme.print_text("---");
 }
 

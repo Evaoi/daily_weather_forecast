@@ -15,4 +15,5 @@ termimad = "0.14.2"
 #reqwest = {version = "0.11.13", features = ["json"]}
 #tokio = {version = "1.24.1", features = ["full"]}
 newsapi = {path = "./newsapi"}
+chrono = "0.4.23"
 

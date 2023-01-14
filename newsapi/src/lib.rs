@@ -14,17 +14,44 @@ pub enum NewsApiError {
 #[derive(Debug, Deserialize)]
 pub struct Weather {
     pub location: Location,
+    pub forecast: Forecast
 }
 
 #[derive(Debug, Deserialize)]
 pub struct Location {
     pub name: String,
     pub country: String,
-    //lat: f32,
-    //lon: f32,
-    tz_id: String,
-    localtime_epoch: i64,
-    localtime: String
+    pub lat: f32,
+    pub lon: f32,
+    pub localtime_epoch: i64,
+    pub localtime: String
+}
+
+#[derive(Debug, Deserialize)]
+pub struct Forecast {
+    pub forecastday: Vec<Forecastday>
+}
+
+#[derive(Debug, Deserialize)]
+pub struct Forecastday {
+    pub hour: Vec<Forecastdayhour>
+}
+
+#[derive(Debug, Deserialize)]
+pub struct Forecastdayhour {
+    pub time_epoch: String,
+    pub time: String,
+    pub temp_c: f32,
+    pub condition: Condition,
+    pub wind_kph: f32,
+    pub precip_mm: f32,
+    pub chance_of_rain: i16
+
+}
+
+#[derive(Debug, Deserialize)]
+pub struct Condition {
+    pub text: String
 }
 
 #[derive(Deserialize, Debug)]
