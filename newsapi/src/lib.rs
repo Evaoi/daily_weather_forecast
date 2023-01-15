@@ -1,5 +1,6 @@
 use std::error::Error;
 use serde::Deserialize;
+use chrono::{DateTime, FixedOffset, Local, Utc};
 
 #[derive(Debug, thiserror::Error)]
 pub enum NewsApiError {
@@ -34,12 +35,13 @@ pub struct Forecast {
 
 #[derive(Debug, Deserialize)]
 pub struct Forecastday {
-    pub hour: Vec<Forecastdayhour>
+    pub hour: Vec<Forecastdayhour>,
+    pub date: String
 }
 
 #[derive(Debug, Deserialize)]
 pub struct Forecastdayhour {
-    pub time_epoch: String,
+    pub time_epoch: i64,
     pub time: String,
     pub temp_c: f32,
     pub condition: Condition,
@@ -59,8 +61,8 @@ struct Weathers {
     weathers: Vec<Weather>
 }
 
-pub fn get_weather(url: &str) -> Result<Weather, NewsApiError> {
-    let response = ureq::get(url)
+pub fn get_weather(request: &str) -> Result<Weather, NewsApiError> {
+    let response = ureq::get(request)
         .call()
         .map_err( |e | NewsApiError::RequestFailed(e))?
         .into_string()
